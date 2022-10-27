@@ -109,7 +109,8 @@ class PostEditView(LoginRequiredMixin, UpdateView):
         else:
             ctx["form"] = form
             return self.render_to_response(ctx)
- 
+
+#カテゴリ追加フォーム 
 def categoryFormView(request):
     category_list = Category.objects.all()
     form = CategoryForm(request.POST or None)

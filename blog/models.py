@@ -3,6 +3,9 @@ from django.db import models
 from django.conf import settings
 from django.utils import timezone
 from django.core.exceptions import ValidationError
+from django.contrib.auth import get_user_model
+
+User = get_user_model()
 
 MAX_SIZE    = 2 * 1000 * 1000
 
@@ -24,8 +27,8 @@ class Category(models.Model):
 
 
 #ニックネーム設定用モデル
-class Nickname(models.Model):
-    id = models.AutoField(primary_key=True)
+class Profile(models.Model):
+    user = models.OneToOneField(User,on_delete=models.CASCADE)
     nickname = models.CharField(
         max_length=100,
         blank=False,
