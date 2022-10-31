@@ -4,6 +4,7 @@ def common(request):
     category_data = Category.objects.all()
 #    posts_data = Post.objects.all()
     posts_data = Post.objects.order_by('-id')
+    posts_data2 = Post.objects.order_by('-id')[:5]
     for_range = [i for i in range(3)]
 
     context = {

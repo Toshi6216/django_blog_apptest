@@ -1,8 +1,0 @@
-dumpdataコマンドはデフォルトで全てのデータをjson形式で出力できます。出力ファイル名は-oオプションで指定しましょう。
-
-$ python manage.py dumpdata -o dump.json
-
-loaddataには引数としてダンプファイルを指定します。
-
-ターミナル
-$ python manage.py loaddata dump.json

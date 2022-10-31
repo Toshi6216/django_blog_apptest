@@ -5,3 +5,10 @@ pillow
 dj-database-url
 python-dotenv
 mysqlclient
+
+dj-static
+python-decouple
+django-environ
+gunicorn
+psycopg2-binary
+whitenoise
