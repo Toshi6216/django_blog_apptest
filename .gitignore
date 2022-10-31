@@ -1,13 +1,13 @@
-#.env
-#memo.txt
-#venv
-#db.sqlite3
-#settings_local.py
-#*.pyc
-#*.swp
-#__pycache__
-#.DS_Store
-#staticfiles
+.env
+memo.txt
+venv
+db.sqlite3
+settings_local.py
+*.pyc
+*.swp
+__pycache__
+.DS_Store
+staticfiles
 
 dumpファイルについて.txt
 アプリ仕様書_hotta_blog_github.xlsx
