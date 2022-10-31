@@ -26,7 +26,7 @@ urlpatterns = [
     path('', include("blog.urls")),
     path('accounts/', include("accounts.urls")),
     path('accounts/', include("allauth.urls")),
-    url(r'^media/(?P<path>.*)$', serve, {'document_root': settings.MEDIA_ROOT}),  #追加
+
     
 ]
 
