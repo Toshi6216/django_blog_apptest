@@ -1,0 +1,94 @@
+#form【変更前10/13以前】
+class PostForm(forms.Form):#View継承なら
+#class PostForm(forms.ModelForm): 
+#CreateView継承を使う場合はModelForm
+    class Meta:
+        model = Post
+        fields = '__all__'
+    #    fields = (
+     #        'title', 'category', 
+     #    )
+  #  category_data = Category.objects.all()
+  #  category_choice = {}
+  #  for category in category_data:
+  #      category_choice[category] = category
+
+  #  title = forms.CharField(max_length=30, label='タイトル')
+  #  category = forms.ChoiceField(
+  #      label='カテゴリ', 
+  #      widget=forms.Select,
+  #      choices=list(category_choice.items())
+  #      )
+#    content = forms.CharField(label='内容', widget=forms.Textarea())
+#    image = forms.ImageField(label='イメージ画像', required=False)
+    
+class ContentCardForm(forms.ModelForm):  #コンテンツカードのフォーム追加
+    class Meta:
+        model = ContentCard
+        fields = '__all__'
+\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+
+#記事投稿のview 【変更前10/13以前】
+class CreatePostView(View,LoginRequiredMixin):
+    def get(self, request, *args, **kwargs):
+        form = PostForm(request.POST or None)
+        return render(request, 'blog/post_form.html',{
+            'form': form #投稿フォームを返す
+        })
+
+    def post(self, request, *args, **kwargs): #投稿内容をデータベースに保存
+        form = PostForm(request.POST or None)
+
+        #フォームのバリデーション
+        if form.is_valid():
+            post_data = Post()
+            post_data.author = request.user
+            post_data.title = form.cleaned_data['title']
+            category = form.cleaned_data['category'] #一旦formのカテゴリデータを格納
+            category_data = Category.objects.get(name=category) #カテゴリをCategoryモデルから取得
+            post_data.category = category_data
+            post_data.content = form.cleaned_data['content']
+            
+            if request.FILES:
+                post_data.image = request.FILES.get('image')
+            post_data.save()
+            return redirect('post_detail', post_data.id)
+
+        return render(request, 'blog/post_form.html',{
+            'form': form
+        })
+\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+#記事投稿のview【変更後】 
+class CreatePostView(CreateView,LoginRequiredMixin):
+    template_name = 'blog/post_form.html'
+    form_class = PostForm
+
+    def get_success_url(self):
+        return reverse("index")
+
+    def get_context_data(self, **kwargs): #投稿内容をデータベースに保存
+        ctx = super().get_context_data(**kwargs)
+        if self.request.method == "POST":
+            post_formset = self.request.POST.copy()  #コピーしないと編集できない
+            files= self.request.FILES  #ファイルを変数に格納
+            post_formset['contentscard-TOTAL_FORMS'] = 1  #手動で入力する必要がある
+            post_formset['contentscard-INITIAL_FORMS'] = 0  #手動で入力する必要がある
+            ctx["blog_formset"] = CardFormset(post_formset,files)  #変数を引数としてCardFormsetに渡してctxに格納
+        else:
+            ctx["blog_formset"] = CardFormset()
+        return ctx
+
+    #フォームのバリデーション
+    def form_valid(self, form):
+        ctx = self.get_context_data()
+        blog_formset = ctx["blog_formset"]
+
+        if blog_formset.is_valid():
+            self.object=form.save()
+            blog_formset.instance = self.object
+            
+            blog_formset.save()
+            return redirect(self.get_success_url())
+        else:
+            ctx["form"] = form
+            return self.render_to_response(ctx)
