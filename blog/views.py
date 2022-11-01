@@ -7,6 +7,8 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from . import forms
 from django.urls import reverse
 
+from django.contrib.auth.decorators import login_required
+
 #TopページのIndexページのview
 class IndexView(ListView):
     model = Post
@@ -111,6 +113,7 @@ class PostEditView(LoginRequiredMixin, UpdateView):
             return self.render_to_response(ctx)
 
 #カテゴリ追加フォーム 
+@login_required
 def categoryFormView(request):
     category_list = Category.objects.all()
     form = CategoryForm(request.POST or None)

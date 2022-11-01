@@ -19,7 +19,8 @@ def validate_max_size(value):
 class Category(models.Model):
     name = models.CharField(
         'カテゴリ',
-        max_length=100,        
+        max_length=100,
+        unique=True,        
         )
    
     def __str__(self):
