@@ -22,7 +22,7 @@ import django_heroku
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-from .settings_local import *
+#from .settings_local import *
 
 
 
