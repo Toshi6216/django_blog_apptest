@@ -2,7 +2,7 @@
 memo.txt
 
 db.sqlite3
-#settings_local.py
+settings_local.py
 *.pyc
 *.swp
 __pycache__
