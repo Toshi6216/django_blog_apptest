@@ -1,7 +1,12 @@
 {% extends 'blog/base.html' %}
 
 {% block content %}
+
 <form method="post" enctype="multipart/form-data">
+<div class="my-4">
+    <p>ユーザーネーム：{{ user.username }}</p>
+</div>
+
     {% csrf_token %}
     {{ formset.management_form }}
     {{ form.as_p }}
