@@ -1,0 +1,15 @@
+{% extends 'blog/base.html' %}
+
+{% block content %}
+<form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ formset.management_form }}
+    {{ form.as_p }}
+    {{ user_formset.as_p }}
+
+    <div class="text-center">
+        <button class="btn btn-warning " type="submit">登録する</button>
+    </div>
+</form>
+
+{% endblock %}
