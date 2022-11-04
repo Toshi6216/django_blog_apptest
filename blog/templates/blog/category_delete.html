@@ -1,0 +1,22 @@
+  {% extends 'blog/base.html' %}
+
+
+  {% block content %}
+
+  <div class="col-12">
+    <div class="card mb-3 col-lg-auto" style="">
+      <div>
+        <h1>カテゴリ削除</h1>
+      <form method="POST" class="post-form">{% csrf_token %}
+
+      </div>
+      {% for category in category_data %}
+        <p>{{ category.name }} - 削除: <input type="checkbox" name="delete" value="{{ category.pk }}"></p>
+           
+      {% endfor %}
+             
+        <p><button type="submit">削除</button></p>
+      </form>
+  </div>
+</div>
+{% endblock %}

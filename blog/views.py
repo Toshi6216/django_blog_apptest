@@ -1,6 +1,6 @@
 from multiprocessing import get_context
 from django.shortcuts import render,  redirect
-from django.views.generic import View, TemplateView, CreateView, UpdateView, ListView
+from django.views.generic import View, TemplateView, CreateView, UpdateView, ListView, DeleteView
 from .models import *
 from .forms import *
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -127,8 +127,22 @@ def categoryFormView(request):
             return render(request, 'blog/category_form.html', context)
     return render(request, 'blog/category_form.html', context)
 
+#カテゴリ削除のview
+class CategoryDeleteView(LoginRequiredMixin, View):
+    
+    model = Category
 
- 
+    def get(self, request, *args, **kwargs):
+        
+        return render(request, 'blog/category_delete.html')
+
+    def post(self, request):
+        category_pks = request.POST.getlist('delete')  # <input type="checkbox" name="delete"のnameに対応
+        Category.objects.filter(pk__in=category_pks).delete()
+        return redirect('index')  # 一覧ページにリダイレクト
+
+
+
 
 #投稿削除のview
 class PostDeleteView(LoginRequiredMixin, View):
@@ -142,6 +156,9 @@ class PostDeleteView(LoginRequiredMixin, View):
         post_data = Post.objects.get(id=self.kwargs['pk'])
         post_data.delete()
         return redirect('index')
+ 
+
+
 
 #カテゴリごとに記事をまとめたview
 class CategoryView(View):

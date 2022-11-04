@@ -86,12 +86,18 @@
                     <div class="card-body">
                         <div class="row">
                         {% for category in category_data %}
-
+                                
                                 <a class="btn btn-info m-2" href="{% url 'category' category %}">
                                 {{ category.name }} </a>
 
                         {% endfor %}
                         </div>
+                        {% if user.is_authenticated %}
+                        <div class="text-center">
+                            <a href="{% url 'category_delete' %}" class="btn btn-danger m-2 ">カテゴリを削除</a>
+                        </div>
+                        {% endif %}
+                        
                     </div>
                 </div>
                 <div class="card">

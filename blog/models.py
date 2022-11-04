@@ -49,7 +49,9 @@ class Post(models.Model):
     category = models.ForeignKey(
         Category,
         verbose_name='カテゴリ',       
-        on_delete=models.PROTECT
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
     )
 
     title = models.CharField(
