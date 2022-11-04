@@ -13,6 +13,9 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 from pathlib import Path
 import os
 import django_heroku
+import environ
+
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 
@@ -32,8 +35,19 @@ SECRET_KEY = config('SECRET_KEY')
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
 
+env = environ.Env(
+    DEBUG=(bool, False)
+)
+#DEBUG = False
+DEBUG = env('DEBUG')
+
+env = environ.Env(
+    DEBUG=(bool, False)
+)
+
+environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
+SECRET_KEY = env('SECRET_KEY')
 
 ALLOWED_HOSTS = ["*"]
 
