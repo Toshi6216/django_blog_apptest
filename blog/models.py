@@ -53,6 +53,7 @@ class Post(models.Model):
         null=True,
         blank=True,
     )
+    
 
     title = models.CharField(
         "タイトル", 

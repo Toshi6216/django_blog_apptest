@@ -24,6 +24,10 @@ import django_heroku
 # SECURITY WARNING: keep the secret key used in production secret!
 #from .settings_local import *
 
+from decouple import config
+
+SECRET_KEY = config('SECRET_KEY')
+
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
