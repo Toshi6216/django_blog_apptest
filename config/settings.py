@@ -14,6 +14,8 @@ from pathlib import Path
 import os
 import django_heroku
 import environ
+from decouple import config
+from dj_database_url import parse as dburl #Render設定
 
 
 
@@ -27,7 +29,7 @@ import environ
 # SECURITY WARNING: keep the secret key used in production secret!
 #from .settings_local import *
 
-from decouple import config
+
 
 #SECRET_KEY = config('SECRET_KEY')
 
@@ -105,23 +107,20 @@ WSGI_APPLICATION = 'config.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
+#DATABASES = {
+#    'default': {
+#        'ENGINE': 'django.db.backends.sqlite3',
+#        'NAME': BASE_DIR / 'db.sqlite3',
+#    }
+#}
+
+#Render設定
+default_dburl = "sqlite:///" + str(BASE_DIR / "db.sqlite3")
+#Render設定
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
+    "default": config("DATABASE_URL", default=default_dburl, cast=dburl),
 }
 
-#import dj_database_url
-#from dotenv import (
-#    find_dotenv,
-#    load_dotenv,
-#)
-#load_dotenv(find_dotenv())
-#DATABASES = {
-#    'default': dj_database_url.config(conn_max_age=600),
-#}
-#
 
 # Password validation
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
@@ -192,3 +191,10 @@ if not DEBUG:
     SECRET_KEY = os.environ['SECRET_KEY'] # 追加
     import django_heroku
     django_heroku.settings(locals())
+
+#Render設定
+DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+#Render設定
+SUPERUSER_NAME = env("SUPERUSER_NAME")
+SUPERUSER_EMAIL = env("SUPERUSER_EMAIL")
+SUPERUSER_PASSWORD = env("SUPERUSER_PASSWORD")
