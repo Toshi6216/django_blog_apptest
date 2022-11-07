@@ -51,6 +51,13 @@ SECRET_KEY = env('SECRET_KEY')
 ALLOWED_HOSTS = ["*"]
 
 
+#Render設定
+DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+#Render設定
+SUPERUSER_NAME = env("SUPERUSER_NAME")
+SUPERUSER_EMAIL = env("SUPERUSER_EMAIL")
+SUPERUSER_PASSWORD = env("SUPERUSER_PASSWORD")
+
 # Application definition
 
 INSTALLED_APPS = [
@@ -191,10 +198,3 @@ if not DEBUG:
     SECRET_KEY = os.environ['SECRET_KEY'] # 追加
     import django_heroku
     django_heroku.settings(locals())
-
-#Render設定
-DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
-#Render設定
-SUPERUSER_NAME = env("SUPERUSER_NAME")
-SUPERUSER_EMAIL = env("SUPERUSER_EMAIL")
-SUPERUSER_PASSWORD = env("SUPERUSER_PASSWORD")
