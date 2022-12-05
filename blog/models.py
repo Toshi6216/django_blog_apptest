@@ -5,6 +5,7 @@ from django.utils import timezone
 from django.core.exceptions import ValidationError
 from django.contrib.auth import get_user_model
 
+#DjangoのUserモデルを使う
 User = get_user_model()
 
 MAX_SIZE    = 2 * 1000 * 1000

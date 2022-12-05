@@ -32,7 +32,8 @@ from dj_database_url import parse as dburl #Render設定
 
 
 #SECRET_KEY = config('SECRET_KEY')
-
+from django.core.management.utils import get_random_secret_key
+SECRET_KEY = get_random_secret_key()
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -42,21 +43,15 @@ env = environ.Env(
     DEBUG=(bool, False)
 )
 #DEBUG = False
-DEBUG = env('DEBUG')
+DEBUG = True
 
 
-environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
-SECRET_KEY = env('SECRET_KEY')
+ALLOWED_HOSTS = ['.pythonanywhere.com']
 
-ALLOWED_HOSTS = ["*"]
+RENDER_EXTERNAL_HOSTNAME = os.environ.get('RENDER_EXTERNAL_HOSTNAME')
+if RENDER_EXTERNAL_HOSTNAME:
+    ALLOWED_HOSTS.append(RENDER_EXTERNAL_HOSTNAME)
 
-
-#Render設定
-DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
-#Render設定
-SUPERUSER_NAME = env("SUPERUSER_NAME")
-SUPERUSER_EMAIL = env("SUPERUSER_EMAIL")
-SUPERUSER_PASSWORD = env("SUPERUSER_PASSWORD")
 
 # Application definition
 
@@ -114,19 +109,14 @@ WSGI_APPLICATION = 'config.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
-#DATABASES = {
-#    'default': {
-#        'ENGINE': 'django.db.backends.sqlite3',
-#        'NAME': BASE_DIR / 'db.sqlite3',
-#    }
-#}
-
-#Render設定
-default_dburl = "sqlite:///" + str(BASE_DIR / "db.sqlite3")
-#Render設定
 DATABASES = {
-    "default": config("DATABASE_URL", default=default_dburl, cast=dburl),
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
+    }
 }
+
+
 
 
 # Password validation
@@ -187,14 +177,3 @@ STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 django_heroku.settings(locals())
 
-# 追加
-try:
-    from .settings_local import *
-except ImportError:
-    pass
-
-# Debug=Falseの時だけ実行する設定
-if not DEBUG:
-    SECRET_KEY = os.environ['SECRET_KEY'] # 追加
-    import django_heroku
-    django_heroku.settings(locals())
