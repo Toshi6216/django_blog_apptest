@@ -19,8 +19,7 @@ class IndexView(ListView):
     def get_context_data(self, *args, **kwargs):
         ctx = super().get_context_data(*args, **kwargs)
         card = ContentCard.objects.all
-        print("card")
-        print(card)
+
         ctx['blog_card'] = card
         
         print(ctx['blog_card'])
@@ -30,6 +29,8 @@ class IndexView(ListView):
 class PostDetailView(View):
     def get(self, request, *args, **kwargs):
         post_data = Post.objects.get(id=self.kwargs['pk']) #pkで記事を特定してデータ取得
+        print(Post.contentcard)
+        
         return render(request, 'blog/post_detail.html',{
             'post_data': post_data
         })
@@ -72,6 +73,7 @@ class CreatePostView(LoginRequiredMixin, CreateView):
 
         else:
             ctx["form"] = form
+            
             return self.render_to_response(ctx)
 
 #編集画面のview
@@ -84,18 +86,16 @@ class PostEditView(LoginRequiredMixin, UpdateView):
         return reverse("index") #入力フォーム内容がセーブできた時の遷移先
 
     def get_context_data(self, **kwargs):
-        print("get_context_data 最初")
 
         ctx=super(PostEditView, self).get_context_data(**kwargs) #オーバーライド前のget_context_dataで返されるオブジェクトを格納
         
         if self.request.method=="POST": #"POST"が呼び出されたときの処理
             files = self.request.FILES  #FILESを変数に格納
             ctx.update(dict(blog_formset=CardFormset(self.request.POST or None, files = files,  instance=self.object)))
-
+            
         else: 
             ctx.update(dict(blog_formset=CardFormset(self.request.POST or None, instance=self.object)))
             CardFormset.extra=0
-        
         return ctx
 
     def form_valid(self, form):

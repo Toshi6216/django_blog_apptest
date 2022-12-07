@@ -35,18 +35,11 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SECURITY WARNING: don't run with debug turned on in production!
 
-env = environ.Env(
-    DEBUG=(bool, False)
-)
-#DEBUG = False
+
 DEBUG = True
 
 
-ALLOWED_HOSTS = ['.pythonanywhere.com']
-
-RENDER_EXTERNAL_HOSTNAME = os.environ.get('RENDER_EXTERNAL_HOSTNAME')
-if RENDER_EXTERNAL_HOSTNAME:
-    ALLOWED_HOSTS.append(RENDER_EXTERNAL_HOSTNAME)
+ALLOWED_HOSTS = ["*", '.pythonanywhere.com']
 
 
 # Application definition

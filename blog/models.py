@@ -44,8 +44,12 @@ class Profile(models.Model):
 #投稿記事のモデル
 class Post(models.Model):
     author = models.ForeignKey(
-        settings.AUTH_USER_MODEL,
+        User,
         on_delete=models.CASCADE)
+
+    #author = models.ForeignKey(
+    #    settings.AUTH_USER_MODEL,
+    #    on_delete=models.CASCADE)
 
     category = models.ForeignKey(
         Category,
@@ -61,17 +65,19 @@ class Post(models.Model):
         max_length=200,
         blank=False,
         null=False)
-    image = models.ImageField(
-        upload_to='images', 
-        verbose_name='イメージ画像', 
-        null=True,
-        blank=True
-    )
 
-    content = models.TextField(
-        "本文",
-        blank=True,
-        null=False)
+    #image = models.ImageField(
+    #    upload_to='images', 
+    #    verbose_name='イメージ画像', 
+    #    null=True,
+    #    blank=True
+    #)
+#
+    #content = models.TextField(
+    #    "本文",
+    #    blank=True,
+    #    null=False)
+    
     created = models.DateTimeField(
         "作成日", 
         auto_now_add=True,

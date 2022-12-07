@@ -1,0 +1,72 @@
+[
+{
+    "model": "blog.category",
+    "pk": 2,
+    "fields": {
+        "name": "天気"
+    }
+},
+{
+    "model": "blog.category",
+    "pk": 3,
+    "fields": {
+        "name": "開発"
+    }
+},
+{
+    "model": "blog.profile",
+    "pk": 1,
+    "fields": {
+        "user": 1,
+        "nickname": "toshisan"
+    }
+},
+{
+    "model": "blog.profile",
+    "pk": 2,
+    "fields": {
+        "user": 2,
+        "nickname": "toshisan2"
+    }
+},
+{
+    "model": "blog.post",
+    "pk": 2,
+    "fields": {
+        "author": 1,
+        "category": 2,
+        "title": "ffff",
+        "created": "2022-12-07T02:29:59.511Z",
+        "updated": "2022-12-07T05:29:09.338Z"
+    }
+},
+{
+    "model": "blog.post",
+    "pk": 4,
+    "fields": {
+        "author": 2,
+        "category": 3,
+        "title": "test_title",
+        "created": "2022-12-07T05:31:16.458Z",
+        "updated": "2022-12-07T05:31:16.458Z"
+    }
+},
+{
+    "model": "blog.contentcard",
+    "pk": 1,
+    "fields": {
+        "content": "ssss",
+        "image": "images/IMG_6467.jpg",
+        "post": 2
+    }
+},
+{
+    "model": "blog.contentcard",
+    "pk": 2,
+    "fields": {
+        "content": "test\r\ntest\r\ntest",
+        "image": "images/IMG_6340_2YVg4ag.jpg",
+        "post": 4
+    }
+}
+]
