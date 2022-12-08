@@ -1,9 +1,10 @@
 from django.test import TestCase, Client
-from django.urls import reverse, resolve
-from ..views import IndexView, categoryFormView, CategoryDeleteView, CreatePostView, CategoryView
+from django.urls import reverse, resolve, reverse_lazy
+from ..views import IndexView, categoryFormView, CategoryDeleteView, CreatePostView, CategoryView, PostDetailView
+
 from ..models import Category, Post
 from django.contrib.auth import get_user_model
-
+#from .factories import UserFactory
 
 class LoggedInTestCase(TestCase):
     def setUp(self):
@@ -15,6 +16,8 @@ class LoggedInTestCase(TestCase):
             password=self.password,
             
          )
+        #self.user = UserFactory()
+
         self.client=Client()
         #ログイン
         self.client.login(
@@ -22,7 +25,9 @@ class LoggedInTestCase(TestCase):
             password=self.password,
         )
 
+        #fixtures = ['/home/toshi/work/code_django/product_code/blog_apptest/fixture.json']
         
+
         #self.category = Category.objects.create(
         #    name='test_cat',
         #)
@@ -40,8 +45,6 @@ class LoggedInTestCase(TestCase):
 
 class TestUrlsWithLogin(LoggedInTestCase):
     
-    #category = Category.objects.get(id=1)
-        
 
     """indexページへのURLでアクセスする時のリダイレクトをテスト"""
     def test_index_url(self):
@@ -66,6 +69,18 @@ class TestUrlsWithLogin(LoggedInTestCase):
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
 
+    """カテゴリ作成の成功をテスト"""
+    def test_category_imput(self):
+        params = {'name':'test_category',}
+        response = self.client.post(reverse_lazy('category_form'), params)
+        print("//category//")
+        print(Category.objects.filter(name='test_category'))
+
+        self.assertRedirects(response, reverse_lazy('category_form'))
+        self.assertEqual(Category.objects.filter(name='test_category').count, 1)
+        
+
+
     """category_deleteページへのURLでアクセスする時のリダイレクトをテスト"""
     def test_category_delete_url(self):
         view = resolve('/category_delete/')
@@ -87,5 +102,6 @@ class TestUrlsWithLogin(LoggedInTestCase):
         url = reverse('post_new')
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
+
 
     

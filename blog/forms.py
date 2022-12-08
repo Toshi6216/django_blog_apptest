@@ -22,6 +22,12 @@ CardFormset = forms.inlineformset_factory(
 )
 
 
+#カテゴリ入力
+class CategoryForm(forms.ModelForm):
+    class Meta:
+        model = Category
+        fields = {'name',}
+
 
 #以下参考
 
@@ -31,8 +37,3 @@ class SampleChoiceAddForm(forms.Form):
         widget=forms.widgets.Select(),
         label='地域'
     )
-
-class CategoryForm(forms.ModelForm):
-    class Meta:
-        model = Category
-        fields = {'name',}
