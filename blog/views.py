@@ -125,6 +125,7 @@ def categoryFormView(request):
         if form.is_valid():
             Category.objects.create(**form.cleaned_data)
             return render(request, 'blog/category_form.html', context)
+
     return render(request, 'blog/category_form.html', context)
 
 #カテゴリ削除のview

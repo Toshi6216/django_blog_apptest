@@ -75,8 +75,9 @@ class TestUrlsWithLogin(LoggedInTestCase):
         response = self.client.post(reverse_lazy('category_form'), params)
         print("//category//")
         print(Category.objects.filter(name='test_category'))
-
+        #カテゴリ追加フォームへのリダイレクトを検証
         self.assertRedirects(response, reverse_lazy('category_form'))
+        #データベースへの登録を検証
         self.assertEqual(Category.objects.filter(name='test_category').count, 1)
         
 
