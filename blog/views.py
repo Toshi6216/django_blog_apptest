@@ -22,14 +22,14 @@ class IndexView(ListView):
 
         ctx['blog_card'] = card
         
-        print(ctx['blog_card'])
+        #print(ctx['blog_card'])
         return ctx
 
 #記事詳細画面のview
 class PostDetailView(View):
     def get(self, request, *args, **kwargs):
         post_data = Post.objects.get(id=self.kwargs['pk']) #pkで記事を特定してデータ取得
-        print(Post.contentcard)
+        #print(Post.contentcard)
         
         return render(request, 'blog/post_detail.html',{
             'post_data': post_data
@@ -117,6 +117,7 @@ class PostEditView(LoginRequiredMixin, UpdateView):
 def categoryFormView(request):
     category_list = Category.objects.all()
     form = CategoryForm(request.POST or None)
+
     context = {
         'category_list':category_list,
         'form':form,
@@ -126,6 +127,7 @@ def categoryFormView(request):
             Category.objects.create(**form.cleaned_data)
             return render(request, 'blog/category_form.html', context)
 
+    #return render(request, 'blog/category_form.html', context)
     return render(request, 'blog/category_form.html', context)
 
 #カテゴリ削除のview

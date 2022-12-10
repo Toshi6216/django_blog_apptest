@@ -1,47 +1,15 @@
 from django.test import TestCase, Client
 from django.urls import reverse, resolve, reverse_lazy
 from ..views import IndexView, categoryFormView, CategoryDeleteView, CreatePostView, CategoryView, PostDetailView
-
+from django.utils import timezone
+import datetime
 from ..models import Category, Post
 from django.contrib.auth import get_user_model
 #from .factories import UserFactory
+from .test_models import LoggedInTestCase
 
-class LoggedInTestCase(TestCase):
-    def setUp(self):
-        #テストユーザー作成
-        self.password='password'
-        self.user = get_user_model().objects.create_user(
-            username='test_user',
-            email='test@aaa.ccc',
-            password=self.password,
-            
-         )
-        #self.user = UserFactory()
-
-        self.client=Client()
-        #ログイン
-        self.client.login(
-            username=self.user.username,
-            password=self.password,
-        )
-
-        #fixtures = ['/home/toshi/work/code_django/product_code/blog_apptest/fixture.json']
         
 
-        #self.category = Category.objects.create(
-        #    name='test_cat',
-        #)
-        
-        #self.post = Post.objects.create(
-        #    auther = 'test_user',
-        #    category = Category.objects.get_or_create(name='test_cat')#[0],
-        #    title = 'test_title',
-        #)
-
-    #def add_category():
-    #    c = Category.objects.get_or_create(name='test_category')[0]
-    #    c.save()
-    #    return c
 
 class TestUrlsWithLogin(LoggedInTestCase):
     
@@ -71,15 +39,14 @@ class TestUrlsWithLogin(LoggedInTestCase):
 
     """カテゴリ作成の成功をテスト"""
     def test_category_imput(self):
-        params = {'name':'test_category',}
+        params = {'name':'test_category2',}
         response = self.client.post(reverse_lazy('category_form'), params)
-        print("//category//")
-        print(Category.objects.filter(name='test_category'))
-        #カテゴリ追加フォームへのリダイレクトを検証
-        self.assertRedirects(response, reverse_lazy('category_form'))
-        #データベースへの登録を検証
-        self.assertEqual(Category.objects.filter(name='test_category').count, 1)
-        
+        qs_counter2 = Category.objects.count()
+        #カテゴリ追加後の画面表示を検証
+        self.assertEqual(response.status_code, 200)
+        #データベースへの登録を検証（カテゴリ件数2個になっていることを確認）
+        self.assertEqual(qs_counter2, 2)
+    
 
 
     """category_deleteページへのURLでアクセスする時のリダイレクトをテスト"""
@@ -93,16 +60,31 @@ class TestUrlsWithLogin(LoggedInTestCase):
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
 
-    """post_newページへのURLでアクセスする時のリダイレクトをテスト"""
+    """投稿(post_new)ページへのURLでアクセスする時のリダイレクトをテスト"""
     def test_post_new_url(self):
         view = resolve('/post/new/')
         self.assertEqual(view.func.view_class, CreatePostView)
 
-    """post_newページのステータスコードをテスト"""
+    """投稿(post_new)ページのステータスコードをテスト"""
     def test_create_post_view_status_code(self):
         url = reverse('post_new')
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
 
 
-    
+    """detailページのステータスコード(成功)をテスト"""
+    def test_post_detail_view_status_code(self):
+        post = Post.objects.get(title = 'test_title')
+        #url = reverse('post_detail', kwargs={'pk': post.pk})
+        url = reverse('post_detail', kwargs={'pk': post.id})
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+
+    #"""detailページのステータスコード(存在しないページでエラー)をテスト"""
+    #def test_post_detail_view_status_code_404(self):
+    #   
+    #    url = reverse('post_detail', kwargs={'pk': 10})
+    #    response = self.client.get(url)
+    #    self.assertEqual(response.status_code, 404)
+
+
