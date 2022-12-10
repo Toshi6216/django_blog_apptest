@@ -26,7 +26,7 @@ class PostFactory(DjangoModelFactory):
     class Meta:
         model = Post
     
-    auther = get_user_model().objects.filter(username='teest_user')
+    auther = get_user_model().objects.filter(username='test_user')
     category = Category.objects.filter(name='test_category')
     title = Faker('word', local=FAKER_LOCAL)
     created = timezone.now() - datetime.timedelta(days=40)

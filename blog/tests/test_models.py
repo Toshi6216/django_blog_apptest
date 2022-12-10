@@ -50,11 +50,8 @@ class LoggedInTestCase(TestCase):
         )
         #self.category.save()
         category_obj = self.category
-        
-        
-
-        
-
+    
+    
         #Postデータを作成
         self.post = Post.objects.create(
             author = self.user,
@@ -136,6 +133,7 @@ class DataCountOne(LoggedInTestCase):
         sample_cc=ContentCard.objects.get(content='test_content')
         print(sample_cc.content)
         self.assertEqual(saved_contentcard.count(), 1)
+
 
 
     #def test_post_data_create_with_contentcard(self):
