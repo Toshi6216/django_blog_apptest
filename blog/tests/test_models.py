@@ -1,11 +1,11 @@
 from django.test import TestCase, Client
 from django.contrib.auth import get_user_model
 from blog.models import Post, Category, Profile, ContentCard
-from ..models import Category, Post
+#from ..models import Category, Post
 from django.utils import timezone
 import datetime
 from PIL import Image
-from .factories import ContentCardFactory, PostFactory
+#from .factories import ContentCardFactory, PostFactory
 import io
 
 class LoggedInTestCase(TestCase):
@@ -24,6 +24,7 @@ class LoggedInTestCase(TestCase):
         saved_user = User.objects.all()
         #ユーザーデータが１つできていることを確認
         self.assertEqual(saved_user.count(), 1)
+        print("User create")
         
 
         #作成したユーザーデータでログイン
@@ -51,7 +52,7 @@ class LoggedInTestCase(TestCase):
         #self.category.save()
         category_obj = self.category
     
-    
+
         #Postデータを作成
         self.post = Post.objects.create(
             author = self.user,
@@ -67,9 +68,12 @@ class LoggedInTestCase(TestCase):
                        
         
         #ContentCardデータを作成
+        img = Image.new('RGB', (200, 150), 'red')
+        img.save('sample.jpg')
+        
         self.contentcard = ContentCard.objects.create(
             content = 'test_content',
-          #  image = im,
+        #    image = img,
             post = post_obj,
         )
         
@@ -84,24 +88,28 @@ class Model_empty_Tests(TestCase):
         """初期状態では何も登録されていないことをチェック"""
         saved_posts = Post.objects.all()
         self.assertEqual(saved_posts.count(), 0)
+        print("post_is_empty")
 
     def test_category_is_empty(self):
         """Categoryデータ"""
         """初期状態では何も登録されていないことをチェック"""
         saved_categories = Category.objects.all()
         self.assertEqual(saved_categories.count(), 0)
+        print("category_is_empty")
 
     def test_profile_is_empty(self):
         """Profileデータ"""
         """初期状態では何も登録されていないことをチェック"""
         saved_profiles = Profile.objects.all()
         self.assertEqual(saved_profiles.count(), 0)
+        print("profile_is_empty")
 
     def test_contentcard_is_empty(self):
         """Contentcardデータ"""
         """初期状態では何も登録されていないことをチェック"""
         saved_contentcards = ContentCard.objects.all()
         self.assertEqual(saved_contentcards.count(), 0)
+        print("contentcard_is_empty")
 
 class DataCountOne(LoggedInTestCase):
     
@@ -110,21 +118,25 @@ class DataCountOne(LoggedInTestCase):
         saved_user = User.objects.all()
         #ユーザーデータが１つできていることを確認
         self.assertEqual(saved_user.count(), 1)
+        print("user_count_one")
         
     def test_profile_count_one(self):
         #Profileデータが１つできていることを確認
         saved_profile = Profile.objects.all()
         self.assertEqual(saved_profile.count(), 1)
+        print("profile_count_one")
 
     def test_category_count_one(self):
         #Categoryデータが１つあることを確認
         saved_category = Category.objects.all()
         self.assertEqual(saved_category.count(), 1)
+        print("category_count_one")
 
     def test_post_count_one(self):
         #Postデータが1つあることを確認
         saved_post = Post.objects.all()
         self.assertEqual(saved_post.count(), 1)
+        print("post_count_one")
 
     def test_contentcard_count_one(self):
         #Contentcardデータが1つあることを確認(本文のみ画像データなし)
@@ -133,8 +145,12 @@ class DataCountOne(LoggedInTestCase):
         sample_cc=ContentCard.objects.get(content='test_content')
         print(sample_cc.content)
         self.assertEqual(saved_contentcard.count(), 1)
+        print("contentcard_count_one")
 
-
+#    def test_contentcard_factory(self):
+#        contentcard_factory = ContentCardFactory().create()
+#        print(contentcard_factory.content)
+#
 
     #def test_post_data_create_with_contentcard(self):
     #    pt= PostFactory()

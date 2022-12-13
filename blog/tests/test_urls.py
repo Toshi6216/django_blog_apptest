@@ -14,10 +14,11 @@ from .test_models import LoggedInTestCase
 class TestUrlsWithLogin(LoggedInTestCase):
     
 
-    """indexページへのURLでアクセスする時のリダイレクトをテスト"""
-    def test_index_url(self):
-        view = resolve('/blog/')
-        self.assertEqual(view.func.view_class, IndexView)
+    #"""indexページへのURLでアクセスする時のリダイレクトをテスト"""
+    #def test_index_url(self):
+    #    view = resolve('/blog/')
+    #    self.assertEqual(view.func.view_class, IndexView)
+    
 
     """Indexページのステータスコードをテスト"""
     def test_index_view_status_code(self):
