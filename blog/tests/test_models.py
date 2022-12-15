@@ -10,6 +10,7 @@ import io
 
 class LoggedInTestCase(TestCase):
     def setUp(self):
+
         #テストユーザー作成
         self.password='password'
         User = get_user_model()
@@ -63,24 +64,20 @@ class LoggedInTestCase(TestCase):
 
         )
         #self.post.save()
-        
         post_obj = self.post
                        
-        
         #ContentCardデータを作成
         img = Image.new('RGB', (200, 150), 'red')
-        img.save('sample.jpg')
+        img.save('media/images/sample.jpg')
         
         self.contentcard = ContentCard.objects.create(
             content = 'test_content',
-        #    image = img,
+            image = 'media/images/sample.jpg',
             post = post_obj,
         )
         
         #self.contentcard.save()
 
-
-        
         
 
 class Model_empty_Tests(TestCase):
@@ -145,6 +142,7 @@ class DataCountOne(LoggedInTestCase):
         sample_cc=ContentCard.objects.get(content='test_content')
         print(sample_cc.content)
         self.assertEqual(saved_contentcard.count(), 1)
+        self.assertEqual(sample_cc.image, 'media/images/sample.jpg')
         print("contentcard_count_one")
 
 #    def test_contentcard_factory(self):
