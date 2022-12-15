@@ -57,4 +57,4 @@ class LoginSignupViewTest(TestCase):
         view = resolve('/accounts/signup/')
         print(view.func)
         self.assertEqual(view.func, newSignupView)
-    
+

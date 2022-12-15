@@ -37,12 +37,14 @@ class CreatePostViewTests(LoggedInTestCase):
         response = self.client.get(reverse('post_new'))
         self.assertEqual(response.status_code, 200)
         print("CreatePostView test_get")
+        print(f"author:{Post.objects.get(pk=1).author}")
 
     """記事投稿の成功を検証"""
     def test_post_success(self):
         #postデータを生成
+        category=Category.objects.get(pk=1)
         params = {
-            "author": 1,
+            "author": self.user,
             "category": 1,
             "title": "post test",
             "created": "2022-12-07T02:29:59.511Z",
@@ -62,7 +64,7 @@ class CreatePostViewTests(LoggedInTestCase):
     def test_post_error(self):
         self.client.logout()
         params = {
-            "author": 1,
+            "author": self.user,
             "category": 1,
             "title": "post test",
             "created": "2022-12-07T02:29:59.511Z",
@@ -90,27 +92,20 @@ class PostEditViewTests(LoggedInTestCase):
     def test_edit_and_redirect(self):
         post = Post.objects.get(title='test_title')
         
-    #    img = Image.new('RGB', (200, 150), 'yellow')
-    #    img.save('media/images/sample2.jpg')
-        
+           
         data={
-            "author": 1,
+            "author": self.user,
             "category": 1,
             "title": "post_edited_test",
             "created": "2022-12-07T02:29:59.511Z",
             "updated": "2022-12-07T05:29:09.338Z",
-            "content":"test",
-            "image": "",
-            #"content":"content_edited_test",
-            #"image": "media/images/sample2.jpg",
+           
         }
         url=reverse_lazy('post_edit', kwargs={'pk': post.pk})
         print(f"reverse_lazy:{url}")
         response = self.client.post(reverse_lazy('post_edit', kwargs={'pk': post.pk}), data)
-        
         # データが編集されたことを検証
         post_updated = Post.objects.get(pk=post.pk)
-        
         self.assertEqual(post_updated.title, "post_edited_test")
         
         # indexページへのリダイレクトを検証
@@ -162,7 +157,14 @@ class CategoryViewTests(LoggedInTestCase):
         print("CategoryView test_get")
 
 class CategoryFormViewTests(LoggedInTestCase):
-    def test_post_success(self):
+    """カテゴリ追加フォームのテスト"""
+    def test_categoryform_url_error_with_login(self):
+        response = self.client.get(reverse('category_form'))
+        self.assertEqual(response.status_code, 200)
+        print("CategoryFormView test_category_form_url")
+
+    def test_category_form_input_success_with_login(self):
+        #ログイン状態でないとカテゴリ追加できない
         #categoryデータを生成
         params = {
             "name": "test_category_post_test"
@@ -174,15 +176,45 @@ class CategoryFormViewTests(LoggedInTestCase):
         #データベースへ登録されたことを検証
         category_data=Category.objects.filter(name="test_category_post_test")
         self.assertEqual(category_data.count(), 1)
+        #カテゴリが増えて２つあることを確認
+        self.assertEqual(count, 2)
         print("category_post_success")
 
-    def test_step1_form(self):
-        data = {
-            "name":"category_name_test2"
-        }
+    def test_categoryform_url_error_with_logout(self):
+        self.client.logout()
+        response = self.client.get(reverse('category_form'))
+        self.assertEqual(response.status_code, 302)
+        print("CategoryFormView test_category_form_url_with_logout")
         
-        form = CategoryForm(data)
-        self.assertTrue(form.is_valid())
-        print("category form is valid")
+class CategoryDeleteViewTests(LoggedInTestCase):
+    """カテゴリ削除フォームのテスト"""
+    def test_category_delete_url_error_with_login(self):
+        response = self.client.get(reverse('category_delete'))
+        self.assertEqual(response.status_code, 200)
+        print("CategoryDeleteView test_category_delete_url")
+
+#    def test_category_form_input_success_with_login(self):
+#        #ログイン状態でないとカテゴリ追加できない
+#        #categoryデータを生成
+#        params = {
+#            "name": "test_category_post_test"
+#            }
+#        response = self.client.post(reverse_lazy('category_form'), params)
+#        category_data_all=Category.objects.all()
+#        count=category_data_all.count()
+#        
+#        #データベースへ登録されたことを検証
+#        category_data=Category.objects.filter(name="test_category_post_test")
+#        self.assertEqual(category_data.count(), 1)
+#        #カテゴリが増えて２つあることを確認
+#        self.assertEqual(count, 2)
+#        print("category_post_success")
+
+    def test_categorydelete_url_error_with_logout(self):
+        self.client.logout()
+        response = self.client.get(reverse('category_delete'))
+        self.assertEqual(response.status_code, 302)
+        print("CategoryFormView test_category_delete_url_with_logout")
+
 
         
