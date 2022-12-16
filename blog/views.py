@@ -149,7 +149,9 @@ class CategoryDeleteView(LoginRequiredMixin, View):
 
     def post(self, request):
         category_pks = request.POST.getlist('delete')  # <input type="checkbox" name="delete"のnameに対応
-        Category.objects.filter(pk__in=category_pks).delete()
+       
+        response=Category.objects.filter(pk__in=category_pks).delete()
+        
         return redirect('index')  # 一覧ページにリダイレクト
 
 

@@ -193,22 +193,21 @@ class CategoryDeleteViewTests(LoggedInTestCase):
         self.assertEqual(response.status_code, 200)
         print("CategoryDeleteView test_category_delete_url")
 
-#    def test_category_form_input_success_with_login(self):
-#        #ログイン状態でないとカテゴリ追加できない
-#        #categoryデータを生成
-#        params = {
-#            "name": "test_category_post_test"
-#            }
-#        response = self.client.post(reverse_lazy('category_form'), params)
-#        category_data_all=Category.objects.all()
-#        count=category_data_all.count()
-#        
-#        #データベースへ登録されたことを検証
-#        category_data=Category.objects.filter(name="test_category_post_test")
-#        self.assertEqual(category_data.count(), 1)
-#        #カテゴリが増えて２つあることを確認
-#        self.assertEqual(count, 2)
-#        print("category_post_success")
+    def test_category_form_delete_success_with_login(self):
+        #ログイン状態でないとカテゴリ削除できない
+        #削除対象読み込み
+        delete_category = Category.objects.get(pk=1)
+        param={
+            "pk":delete_category.pk
+        }
+        #削除実行
+        response = self.client.post(reverse_lazy("category_delete"), param)
+
+        confirm_delete = Category.objects.all()
+        #カテゴリが減り、ないことを確認
+        self.assertEqual(confirm_delete.count(), 0)
+        print("test_category_form_delete_success_with_login")
+         
 
     def test_categorydelete_url_error_with_logout(self):
         self.client.logout()
