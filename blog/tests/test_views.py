@@ -7,6 +7,7 @@ from blog.models import Post, Category, Profile, ContentCard
 from django.contrib.auth import get_user_model
 from PIL import Image
 from ..forms import PostForm, ContentCardForm, CardFormset, CategoryForm
+from django.utils import timezone
 
 t_delta = datetime.timedelta(hours=9)
 JST = datetime.timezone(t_delta, 'JST')
@@ -47,8 +48,8 @@ class CreatePostViewTests(LoggedInTestCase):
             "author": self.user,
             "category": 1,
             "title": "post test",
-            "created": "2022-12-07T02:29:59.511Z",
-            "updated": "2022-12-07T05:29:09.338Z",
+            "created": timezone.now() - datetime.timedelta(days=30),
+            "updated": timezone.now()
             }
         response = self.client.post(reverse_lazy('post_new'), params)
         post_data=Post.objects.get(title='post test')
@@ -57,7 +58,8 @@ class CreatePostViewTests(LoggedInTestCase):
         #indexへのリダイレクトを検証
         self.assertRedirects(response, reverse_lazy('index'))
         #データベースへ登録されたことを検証
-        post_data=Post.objects.filter(title='post test')
+        post_data=Post.objects.get(title='post test')
+        print(f"create date:{post_data.created}")
         self.assertEqual(post_data.count(), 1)
         
     """ログアウト時に投稿できないことを検証"""
@@ -67,8 +69,8 @@ class CreatePostViewTests(LoggedInTestCase):
             "author": self.user,
             "category": 1,
             "title": "post test",
-            "created": "2022-12-07T02:29:59.511Z",
-            "updated": "2022-12-07T05:29:09.338Z",
+            "created": timezone.now() - datetime.timedelta(days=30),
+            "updated": timezone.now()
 
             }
         response = self.client.post(reverse_lazy('post_new'), params)
@@ -97,12 +99,11 @@ class PostEditViewTests(LoggedInTestCase):
             "author": self.user,
             "category": 1,
             "title": "post_edited_test",
-            "created": "2022-12-07T02:29:59.511Z",
-            "updated": "2022-12-07T05:29:09.338Z",
-           
+            "updated": timezone.now(),
+            "content": "edited_content",
+
         }
-        url=reverse_lazy('post_edit', kwargs={'pk': post.pk})
-        print(f"reverse_lazy:{url}")
+
         response = self.client.post(reverse_lazy('post_edit', kwargs={'pk': post.pk}), data)
         # データが編集されたことを検証
         post_updated = Post.objects.get(pk=post.pk)

@@ -51,7 +51,6 @@ class LoginSignupViewTest(TestCase):
         self.assertEqual(response.status_code, 200)
         print("test_signup_view_status_code")
 
-    
     def test_signup_url(self):
         """signupページへのURLでアクセスする時のリダイレクトをテスト"""
         view = resolve('/accounts/signup/')
