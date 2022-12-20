@@ -3,10 +3,11 @@ from .models import Profile, Post, Category, ContentCard
 
 
 
-@admin.register(Post)
+#@admin.register(Post)
 class PostAdmin(admin.ModelAdmin):
-    pass
+    list_display = ('title', 'id', 'author',  'created', 'updated')
 
+admin.site.register(Post, PostAdmin)
 
 
 @admin.register(Category)

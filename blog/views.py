@@ -50,6 +50,7 @@ class CreatePostView(LoginRequiredMixin, CreateView):
 
         if self.request.method=="POST": #"POST"が呼び出されたときの処理
             post_formset = self.request.POST.copy() #request.POSTをコピーして変数に格納
+            print(post_formset)
             files = self.request.FILES  #FILESを変数に格納
             post_formset['contentcard-TOTAL_FORMS']=1 #フォームの数 formsetを使う場合必須
             post_formset['contentcard-INITIAL_FORMS']=0 #formsetを使う場合必須
@@ -148,10 +149,14 @@ class CategoryDeleteView(LoginRequiredMixin, View):
         return render(request, 'blog/category_delete.html')
 
     def post(self, request):
+        print(request.POST)
         category_pks = request.POST.getlist('delete')  # <input type="checkbox" name="delete"のnameに対応
-       
+#        print("category_pks: {category_pks}")
+#        cat_del=Category.objects.filter(pk__in=category_pks)
+#        print(cat_del)
         response=Category.objects.filter(pk__in=category_pks).delete()
-        
+#        cat_del=Category.objects.filter(pk__in=category_pks)
+#        print(cat_del)
         return redirect('index')  # 一覧ページにリダイレクト
 
 

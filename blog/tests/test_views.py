@@ -33,6 +33,7 @@ class DetailViewTests(LoggedInTestCase):
 
 
 class CreatePostViewTests(LoggedInTestCase):
+    #python manage.py test blog.tests.test_views.CreatePostViewTests
     """CreatePostViewのレスポンスを検証"""
     def test_get(self):
         response = self.client.get(reverse('post_new'))
@@ -45,22 +46,39 @@ class CreatePostViewTests(LoggedInTestCase):
         #postデータを生成
         #category=Category.objects.get(pk=1)
         params = {
-            "author": self.user,
+        #    "author": self.user,
             "category": 1,
             "title": "post test",
-            "created": timezone.now() - datetime.timedelta(days=30),
-            "updated": timezone.now(),
-
+            #contentcardの本文をセット
+            "contentcard-0-content": "post_content_test",
+        
             }
+        
+        
         response = self.client.post(reverse_lazy('post_new'), params)
         post_data=Post.objects.get(title='post test')
-        #print(f"new post category:{post_data.category}")
+
+    #    print(f"post_created:{post_data.created}")
+    #    print(f"post_author:{post_data.author}")
+    #    print(f"post_pk:{post_data.pk}")
+    #    print(f"post category:{post_data.category}")
+    #    print(f"post_content:{post_data.contentcard.content}")
+        post_count=Post.objects.all().count()
+    #    print(f"post_count(n=2):{post_count}")
+        
+        contentcard=ContentCard.objects.all().count()
+        print(f"contentcard_count(n=2):{contentcard}")
+        
         post_data_all = Post.objects.all()
         
         #indexへのリダイレクトを検証
         self.assertRedirects(response, reverse_lazy('index'))
+
         #データベースへ登録されたことを検証
+        content=ContentCard.objects.get(pk=2)
+        print(f"posted_content:{content.content}")#contentcardに本文が登録された
         post_data=Post.objects.filter(title='post test')
+
         self.assertEqual(post_data.count(), 1)
         
     """ログアウト時に投稿できないことを検証"""
@@ -84,6 +102,7 @@ class CreatePostViewTests(LoggedInTestCase):
         print("CreatePostView test_post_error")
 
 class PostEditViewTests(LoggedInTestCase):
+    #python manage.py test blog.tests.test_views.PostEditViewTests
     #記事編集画面のテスト
     def test_get(self):
         """ログイン時編集編集画面へのアクセス(author=user)を確認"""
@@ -97,22 +116,29 @@ class PostEditViewTests(LoggedInTestCase):
         """ログイン時、編集できること、リダイレクトを確認"""
         print(f"post login user: {self.user}")
         post = Post.objects.get(title='test_title')
-        
+        print(f"post author:{post.author}")
+        print(f"post pk:{post.pk}")
         data={
-            "author": self.user,
+        #    "author": self.user,
             "category": 1,
             "title": "post_edited_test",
-            "updated": timezone.now(),
+            "contentcard-0-content": "post_content_edited_test",
+
+        #    "updated": timezone.now(),
             #"content": "edited_content",
 
         }
         url=reverse_lazy('post_edit', kwargs={'pk': post.pk})
         print(f"reverse_lazy:{url}")
 
-        response = self.client.post(reverse_lazy('post_edit', kwargs={'pk': post.pk}), data)
+        response = self.client.post(url, {"title": "post_edited_test"})
+        self.assertEquals(response.status_code, 200)
+        print(response)
+        print(Post.objects.all())
         # データが編集されたことを検証
         post_updated = Post.objects.get(pk=post.pk)
         print(f"post updated title: {post_updated.title}")
+        
         self.assertEqual(post_updated.title, "post_edited_test")
         
         # indexページへのリダイレクトを検証
@@ -229,6 +255,7 @@ class CategoryFormViewTests(LoggedInTestCase):
         print("CategoryFormView test_category_form_url_with_logout")
         
 class CategoryDeleteViewTests(LoggedInTestCase):
+    #python manage.py test blog.tests.test_views.CategoryDeleteViewTests
     """カテゴリ削除フォームのテスト"""
     def test_category_delete_url_error_with_login(self):
         response = self.client.get(reverse('category_delete'))
@@ -239,20 +266,24 @@ class CategoryDeleteViewTests(LoggedInTestCase):
         #ログイン状態でないとカテゴリ削除できない
         #削除対象読み込み
         delete_category = Category.objects.get(pk=1)
-        print(f"delete category: {delete_category}")
+
+        self.category = Category.objects.create(
+            name='test_category2',
+        )
+        count=Category.objects.all().count()
+        print(f"category_count(2){count}")
+        
         param={
-            "pk":1
+            "delete":[1,2],
         }
         #削除実行
         response = self.client.post(reverse_lazy("category_delete"), param)
-        #response = self.client.post(reverse_lazy("category_delete", kwargs={"pk":delete_category.pk}))
-        
         confirm_delete = Category.objects.all()
         #カテゴリが減り、ないことを確認
         self.assertEqual(confirm_delete.count(), 0)
         print("test_category_form_delete_success_with_login")
          
-
+class CategoryDeleteViewTests_with_logout(TestCase):
     def test_categorydelete_url_error_with_logout(self):
         self.client.logout()
         response = self.client.get(reverse('category_delete'))
