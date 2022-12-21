@@ -59,7 +59,7 @@ class CreatePostViewTests(LoggedInTestCase):
         post_data=Post.objects.get(title='post test')
 
     #    print(f"post_created:{post_data.created}")
-    #    print(f"post_author:{post_data.author}")
+        print(f"post_author:{post_data.author}")
     #    print(f"post_pk:{post_data.pk}")
     #    print(f"post category:{post_data.category}")
     #    print(f"post_content:{post_data.contentcard.content}")
@@ -117,27 +117,32 @@ class PostEditViewTests(LoggedInTestCase):
         print(f"post login user: {self.user}")
         post = Post.objects.get(title='test_title')
         print(f"post author:{post.author}")
+    #    print(f"post author:{post.}")
         print(f"post pk:{post.pk}")
         data={
         #    "author": self.user,
             "category": 1,
             "title": "post_edited_test",
             "contentcard-0-content": "post_content_edited_test",
-
-        #    "updated": timezone.now(),
-            #"content": "edited_content",
+        #    'contentcard-0-post': 1,
+            'contentcard-TOTAL_FORMS': 1, 
+            'contentcard-INITIAL_FORMS': 1, 
+            'contentcard-MIN_NUM_FORMS': 1, 
+            'contentcard-MAX_NUM_FORMS': 1000,
 
         }
+        
         url=reverse_lazy('post_edit', kwargs={'pk': post.pk})
         print(f"reverse_lazy:{url}")
 
-        response = self.client.post(url, {"title": "post_edited_test"})
-        self.assertEquals(response.status_code, 200)
+        response = self.client.post(url, data, instance=post)
+    #    self.assertEquals(response.status_code, 200)
         print(response)
         print(Post.objects.all())
         # データが編集されたことを検証
         post_updated = Post.objects.get(pk=post.pk)
         print(f"post updated title: {post_updated.title}")
+    #    print(f"post updated content: {post_updated.contentcard.content}")
         
         self.assertEqual(post_updated.title, "post_edited_test")
         
@@ -225,7 +230,7 @@ class CategoryViewTests(LoggedInTestCase):
         print("CategoryView test_get")
 
 class CategoryFormViewTests(LoggedInTestCase):
-    """カテゴリ追加フォームのテスト"""
+    """カテゴリ追加フォームの表示のテスト"""
     def test_categoryform_url_error_with_login(self):
         response = self.client.get(reverse('category_form'))
         self.assertEqual(response.status_code, 200)
@@ -274,7 +279,7 @@ class CategoryDeleteViewTests(LoggedInTestCase):
         print(f"category_count(2){count}")
         
         param={
-            "delete":[1,2],
+            "delete":[1,2],#削除するカテゴリのpkをリストに格納
         }
         #削除実行
         response = self.client.post(reverse_lazy("category_delete"), param)
@@ -285,10 +290,9 @@ class CategoryDeleteViewTests(LoggedInTestCase):
          
 class CategoryDeleteViewTests_with_logout(TestCase):
     def test_categorydelete_url_error_with_logout(self):
-        self.client.logout()
+        #ログインしていないとリダイレクトとなることを確認
         response = self.client.get(reverse('category_delete'))
         self.assertEqual(response.status_code, 302)
         print("CategoryFormView test_category_delete_url_with_logout")
 
 
-        

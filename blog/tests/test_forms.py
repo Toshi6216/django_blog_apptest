@@ -21,7 +21,7 @@ class PostFormTest(LoggedInTestCase):
         #    "updated": timezone.now(),
         }
         form = PostForm(data=form_data)
-        print(form)
+        #print(form)
         self.assertTrue(form.is_valid())
 
     def test_contentdardform(self):
@@ -50,6 +50,7 @@ class PostFormTest(LoggedInTestCase):
         
         }
         form = ContentCardForm(data=contentcardform_data)
+        print("ContentCardForm:")
         print(form)
         self.assertTrue(form.is_valid)
 
@@ -62,5 +63,7 @@ class PostFormTest(LoggedInTestCase):
         
         }
         #form =CardFormset(data=formset_data)
-        cardformset =CardFormset()
+        cardformset =CardFormset(formset_data)
+        print("cardformset.is_valid:")
+        print(cardformset.is_valid)
         self.assertTrue(cardformset.is_valid)

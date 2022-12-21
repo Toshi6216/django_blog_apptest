@@ -14,4 +14,5 @@ urlpatterns = [
     path('test/<int:pk>/detail/', views.TestDetailView.as_view(), name='test_detail'),
     path('test/', views.BlogTestView.as_view(), name='test'),
     path('sample/', views.lists, name='lists'),
+    path('home/', views.HomeView.as_view(), name='home'),
 ]

@@ -98,11 +98,14 @@ class PostEditView(LoginRequiredMixin, UpdateView):
         
         if self.request.method=="POST": #"POST"が呼び出されたときの処理
             files = self.request.FILES  #FILESを変数に格納
+            print(dict(blog_formset=CardFormset(self.request.POST or None, files = files,  instance=self.object)))
+            print(f"self.request: {self.request.POST}")
             ctx.update(dict(blog_formset=CardFormset(self.request.POST or None, files = files,  instance=self.object)))
             
         else: 
             ctx.update(dict(blog_formset=CardFormset(self.request.POST or None, instance=self.object)))
-            CardFormset.extra=0
+            CardFormset.extra=1
+            CardFormset.max_num=1
             #print(ctx["blog_formset"])
         return ctx
 
@@ -193,6 +196,8 @@ class CategoryView(View):
 
 
 # ___ここから下はお試し用____
+class HomeView(TemplateView):
+    template_name = "home.html"
 
 class TestDetailView(View):
     def get(self, request, *args, **kwargs):
