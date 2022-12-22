@@ -102,7 +102,7 @@ class CreatePostViewTests(LoggedInTestCase):
         print("CreatePostView test_post_error")
 
 class PostEditViewTests(LoggedInTestCase):
-    #python manage.py test blog.tests.test_views.PostEditViewTests
+    # python manage.py test blog.tests.test_views.PostEditViewTests
     #記事編集画面のテスト
     def test_get(self):
         """ログイン時編集編集画面へのアクセス(author=user)を確認"""
@@ -117,32 +117,36 @@ class PostEditViewTests(LoggedInTestCase):
         print(f"post login user: {self.user}")
         post = Post.objects.get(title='test_title')
         print(f"post author:{post.author}")
-    #    print(f"post author:{post.}")
+
         print(f"post pk:{post.pk}")
+        contentcard = ContentCard.objects.get(post=post.pk)
+        print(f"contentcard_post_pk:{contentcard.pk}")
+        
         data={
         #    "author": self.user,
-            "category": 1,
+        #    "category": post.category.pk,
             "title": "post_edited_test",
-            "contentcard-0-content": "post_content_edited_test",
+        #    "contentcard-0-content": "post_content_edited_test",
         #    'contentcard-0-post': 1,
-            'contentcard-TOTAL_FORMS': 1, 
-            'contentcard-INITIAL_FORMS': 1, 
-            'contentcard-MIN_NUM_FORMS': 1, 
-            'contentcard-MAX_NUM_FORMS': 1000,
+            "contentcard-0-id": contentcard.pk, #入力フォーム表示していないが必須
+            'contentcard-TOTAL_FORMS': 1, #formsetはこれが必要
+            'contentcard-INITIAL_FORMS': 1, #formsetはこれが必要
+
 
         }
-        
+        post_obj = Post
         url=reverse_lazy('post_edit', kwargs={'pk': post.pk})
         print(f"reverse_lazy:{url}")
 
-        response = self.client.post(url, data, instance=post)
+        response = self.client.post(url, data)
+
     #    self.assertEquals(response.status_code, 200)
-        print(response)
-        print(Post.objects.all())
+        print(f"response: {response}")
+
         # データが編集されたことを検証
         post_updated = Post.objects.get(pk=post.pk)
         print(f"post updated title: {post_updated.title}")
-    #    print(f"post updated content: {post_updated.contentcard.content}")
+       # print(f"post updated content: {post_updated.contentcard_set.content}")
         
         self.assertEqual(post_updated.title, "post_edited_test")
         

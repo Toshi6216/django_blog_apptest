@@ -11,7 +11,7 @@ from django.utils import timezone
 
 
 class PostFormTest(LoggedInTestCase):
-    #python manage.py test blog.tests.test_forms.PostFormTest
+    # python manage.py test blog.tests.test_forms.PostFormTest
     def test_post_form(self):
         form_data={
         #    "author": self.user,
@@ -21,6 +21,9 @@ class PostFormTest(LoggedInTestCase):
         #    "updated": timezone.now(),
         }
         form = PostForm(data=form_data)
+        print(f"postform(data): {form}")
+        test_postform_is_valid=form.is_valid()
+        print(f"test_postform_is_valid: {test_postform_is_valid}")
         #print(form)
         self.assertTrue(form.is_valid())
 
@@ -55,15 +58,46 @@ class PostFormTest(LoggedInTestCase):
         self.assertTrue(form.is_valid)
 
     def test_formset(self):
+        """ContentCardFormsetのバリデーションをチェック"""
         formset_data={
             "category": 1,
             "title": "post form test",
             "post":1,
-            "contentcard-0-content": "post_formset_content_test<p>ttt</p>",
+            "contentcard-0-content": "post_formset_content_test",
+            "contentcard-0-id": 1, #フォームに表示していないが必須
+
+            'contentcard-TOTAL_FORMS': 1, #formsetはこれが必要
+            'contentcard-INITIAL_FORMS': 1, #formsetはこれが必要
         
         }
         #form =CardFormset(data=formset_data)
+    #    print("CardFormset: ")
         cardformset =CardFormset(formset_data)
-        print("cardformset.is_valid:")
-        print(cardformset.is_valid)
-        self.assertTrue(cardformset.is_valid)
+    #    print(cardformset)
+
+    #    print("cardformset.is_valid:")
+    #    print(cardformset.is_valid())
+        self.assertTrue(cardformset.is_valid())
+
+    def test_formset_error(self):
+        """ContentCardFormsetのバリデーションエラーをチェック"""
+        formset_data={
+            "category": 1,
+            "title": "post form test",
+            "post":1,
+            "contentcard-0-content": "post_formset_content_test",
+            "contentcard-0-id": 1,
+
+        #    'contentcard-TOTAL_FORMS': 1, 
+        #    'contentcard-INITIAL_FORMS': 1, 
+
+        
+        }
+        
+        print("CardFormset: ")
+        cardformset =CardFormset(formset_data)
+        print(cardformset)
+
+    #    print("cardformset.is_valid:")
+    #    print(cardformset.is_valid())
+        self.assertFalse(cardformset.is_valid())

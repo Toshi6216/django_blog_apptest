@@ -114,7 +114,8 @@ class PostEditView(LoginRequiredMixin, UpdateView):
         blog_formset = ctx["blog_formset"]
 
         if blog_formset.is_valid():
-            
+            print("blog_formset is_valid:")
+            print(blog_formset.is_valid())
             self.object=form.save(commit=False)
             self.object.save()  
             blog_formset.save()

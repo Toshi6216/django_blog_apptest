@@ -72,7 +72,7 @@ class LoggedInTestCase(TestCase):
         
         self.contentcard = ContentCard.objects.create(
             content = 'test_content',
-            image = 'media/images/sample.jpg',
+            image = 'images/sample.jpg',
             post = post_obj,
         )
         
